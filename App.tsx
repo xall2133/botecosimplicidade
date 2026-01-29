@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import ChatAssistant from './components/ChatAssistant';
 import Agenda from './components/Agenda';
 import SambaPlaylist from './components/SambaPlaylist';
+import VideoGallery from './components/VideoGallery';
 
 const App: React.FC = () => {
   const [view, setView] = useState<'home' | 'agenda'>('home');
@@ -48,6 +49,7 @@ const App: React.FC = () => {
               </div>
             </section>
 
+            <VideoGallery />
             <SambaPlaylist />
           </>
         ) : (
@@ -57,7 +59,6 @@ const App: React.FC = () => {
 
       <Footer />
       
-      {/* AI Assistant */}
       <ChatAssistant />
     </div>
   );
