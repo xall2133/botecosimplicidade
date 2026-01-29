@@ -4,13 +4,11 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   define: {
-    // Substitui process.env.API_KEY no código fonte pelo valor da variável de ambiente durante o build.
+    // Isso substitui process.env.API_KEY no código pelo valor real durante o build
     'process.env.API_KEY': JSON.stringify(process.env.API_KEY || "")
   },
   build: {
     outDir: 'dist',
-    sourcemap: false,
-    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
