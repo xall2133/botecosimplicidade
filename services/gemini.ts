@@ -1,4 +1,3 @@
-
 import { GoogleGenAI } from "@google/genai";
 
 const SYSTEM_INSTRUCTION = `
@@ -13,7 +12,7 @@ Informações sobre o Boteco:
 `;
 
 export const getGeminiResponse = async (userMessage: string, history: {role: string, parts: {text: string}[]}[]) => {
-  // Instanciando dentro da função para garantir que use a chave de ambiente atual e não falhe no build
+  // Inicialização dentro da função para garantir o uso da chave mais atualizada e evitar erros de build
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   try {
@@ -45,7 +44,7 @@ export const getAiVideoRecommendation = async (videoTitles: string[], userPrefer
       model: 'gemini-3-flash-preview',
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       config: { 
-        systemInstruction: SYSTEM_INSTRUCTION + "\nTarefa específica: Recomendar um vídeo de forma persuasiva."
+        systemInstruction: SYSTEM_INSTRUCTION + "\nTarefa específica: Recomendar um vídeo de forma persuasiva e carismática."
       },
     });
     return response.text;
