@@ -1,0 +1,55 @@
+
+import { GoogleGenAI } from "@google/genai";
+
+const SYSTEM_INSTRUCTION = `
+Você é o "Mestre Simplicidade", o assistente virtual do Boteco do Simplicidade. 
+Seu tom é amigável, malandro (mas educado), apaixonado por samba e conhecedor da cultura carioca.
+
+Informações sobre o Boteco:
+- Localização: Cajazeiras 10, Setor 02 (Depois do posto de saúde seguir à direita, Casa 80).
+- Funcionamento: Quinta a Domingo.
+- Especialidades: Cerveja gelada (ponto de véu), bolinho de feijoada, torresmo crocante, costela no bafo.
+- Música: Samba de raiz ao vivo todas as noites.
+
+Tarefa específica:
+Quando receber uma lista de vídeos, você deve recomendar UM vídeo de forma persuasiva e animada, explicando por que ele é "a boa" para o momento.
+`;
+
+export const getGeminiResponse = async (userMessage: string, history: {role: string, parts: {text: string}[]}[]) => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-lite-latest',
+      contents: [
+        ...history,
+        { role: 'user', parts: [{ text: userMessage }] }
+      ],
+      config: {
+        systemInstruction: SYSTEM_INSTRUCTION,
+        temperature: 0.8,
+      },
+    });
+
+    return response.text || "Puxa, deu um descompasso aqui no meu pandeiro. Pode repetir?";
+  } catch (error) {
+    console.error("Gemini Error:", error);
+    return "Opa, meu cavaco desafinou! Tenta de novo em um instante.";
+  }
+};
+
+export const getAiVideoRecommendation = async (videoTitles: string[], userPreference?: string) => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  const prompt = `Aqui estão os títulos dos vídeos disponíveis: ${videoTitles.join(', ')}. ${userPreference ? `O usuário prefere algo tipo: ${userPreference}.` : 'Recomende o melhor vídeo para quem gosta de um bom samba e boteco.'} Responda apenas com a recomendação em 2 frases no estilo do Mestre Simplicidade.`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-lite-latest',
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      config: { systemInstruction: SYSTEM_INSTRUCTION },
+    });
+    return response.text;
+  } catch (error) {
+    return "Olha, todos são nota 10, mas escolhe o primeiro que é sucesso!";
+  }
+};

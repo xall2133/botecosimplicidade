@@ -1,0 +1,7 @@
+{
+  "name": "Boteco do Simplicidade",
+  "description": "Uma experiência autêntica de boteco com o melhor do samba de raiz, cerveja gelada e petiscos clássicos.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
