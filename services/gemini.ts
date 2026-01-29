@@ -10,17 +10,15 @@ Informações sobre o Boteco:
 - Funcionamento: Quinta a Domingo.
 - Especialidades: Cerveja gelada (ponto de véu), bolinho de feijoada, torresmo crocante, costela no bafo.
 - Música: Samba de raiz ao vivo todas as noites.
-
-Tarefa específica:
-Quando receber uma lista de vídeos, você deve recomendar UM vídeo de forma persuasiva e animada, explicando por que ele é "a boa" para o momento.
 `;
 
 export const getGeminiResponse = async (userMessage: string, history: {role: string, parts: {text: string}[]}[]) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  // Instanciando dentro da função para garantir que use a chave de ambiente atual e não falhe no build
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-lite-latest',
+      model: 'gemini-3-flash-preview',
       contents: [
         ...history,
         { role: 'user', parts: [{ text: userMessage }] }
@@ -39,17 +37,20 @@ export const getGeminiResponse = async (userMessage: string, history: {role: str
 };
 
 export const getAiVideoRecommendation = async (videoTitles: string[], userPreference?: string) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `Aqui estão os títulos dos vídeos disponíveis: ${videoTitles.join(', ')}. ${userPreference ? `O usuário prefere algo tipo: ${userPreference}.` : 'Recomende o melhor vídeo para quem gosta de um bom samba e boteco.'} Responda apenas com a recomendação em 2 frases no estilo do Mestre Simplicidade.`;
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-lite-latest',
+      model: 'gemini-3-flash-preview',
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      config: { systemInstruction: SYSTEM_INSTRUCTION },
+      config: { 
+        systemInstruction: SYSTEM_INSTRUCTION + "\nTarefa específica: Recomendar um vídeo de forma persuasiva."
+      },
     });
     return response.text;
   } catch (error) {
+    console.error("Gemini Recommendation Error:", error);
     return "Olha, todos são nota 10, mas escolhe o primeiro que é sucesso!";
   }
 };
