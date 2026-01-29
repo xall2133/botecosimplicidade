@@ -12,8 +12,11 @@ Informações sobre o Boteco:
 `;
 
 export const getGeminiResponse = async (userMessage: string, history: {role: string, parts: {text: string}[]}[]) => {
-  // Inicialização dentro da função para garantir o uso da chave mais atualizada e evitar erros de build
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  // A inicialização deve ocorrer dentro da chamada para garantir que a chave esteja disponível no runtime do navegador
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) return "Estou sem voz agora (API Key ausente). Tenta mais tarde!";
+  
+  const ai = new GoogleGenAI({ apiKey });
   
   try {
     const response = await ai.models.generateContent({
@@ -36,7 +39,10 @@ export const getGeminiResponse = async (userMessage: string, history: {role: str
 };
 
 export const getAiVideoRecommendation = async (videoTitles: string[], userPreference?: string) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) return "Recomendo vir tomar uma cerveja enquanto meu sistema volta!";
+  
+  const ai = new GoogleGenAI({ apiKey });
   const prompt = `Aqui estão os títulos dos vídeos disponíveis: ${videoTitles.join(', ')}. ${userPreference ? `O usuário prefere algo tipo: ${userPreference}.` : 'Recomende o melhor vídeo para quem gosta de um bom samba e boteco.'} Responda apenas com a recomendação em 2 frases no estilo do Mestre Simplicidade.`;
 
   try {
@@ -44,7 +50,7 @@ export const getAiVideoRecommendation = async (videoTitles: string[], userPrefer
       model: 'gemini-3-flash-preview',
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       config: { 
-        systemInstruction: SYSTEM_INSTRUCTION + "\nTarefa específica: Recomendar um vídeo de forma persuasiva e carismática."
+        systemInstruction: SYSTEM_INSTRUCTION + "\nTarefa específica: Recomendar um vídeo de forma persuasiva."
       },
     });
     return response.text;
