@@ -154,7 +154,7 @@ const Agenda: React.FC<AgendaProps> = ({ onNavigate }) => {
                         <span className="material-icons text-orange-500">directions_run</span> Arrastão de Samba
                       </span>
                       <span className="flex items-center gap-1.5 font-medium">
-                        <span className="material-icons text-orange-500">map</span> Rota: Feirinha -> Pronaica
+                        <span className="material-icons text-orange-500">map</span> Rota: Feirinha &rarr; Pronaica
                       </span>
                     </div>
                   </div>
